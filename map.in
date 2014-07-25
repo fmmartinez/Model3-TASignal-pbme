@@ -1,0 +1,14 @@
+Np	DELTA	KONDO	NOSC	OME_MAX	
+3	0.0	0.09	20	50
+NMCS	NMDS	seed	DT	LUMDA_D
+100000	954	90	5d-5	10
+Eg	Eb	Ed	mu	E0	E1	beta	vib_omega
+0	240	240	1	0.5	0.05	0.24	6d0
+TAU	OMEGA	time3	step1	step2
+0.045	260	0.15	128	0.04
+BATH(0:B EQ 1:T EQ)	INIT	NFILE
+0			3	0
+basispc	g	b	d
+0	3	7	1
+pi\pj\pk
+0	0	0
