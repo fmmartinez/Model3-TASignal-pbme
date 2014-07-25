@@ -728,37 +728,6 @@ end do
 
 end subroutine iniconq_d
 
-subroutine iniconc()
-implicit none
-
-integer :: i
-
-open(666,file="map.in")
-
-read(666,*)
-read(666,*) np,delta,kondo,nosc,ome_max
-read(666,*)
-read(666,*) nmcs,nmds,seed_dimension,dt,lumda_d
-read(666,*)
-read(666,*) eg,eb,ed,mu,e0,e1,beta,vomega
-read(666,*)
-read(666,*) tau1,omega1,time3,step1,step2
-read(666,*)
-read(666,*) bath,init,nfile
-read(666,*)
-read(666,*) basispc,ng,nb,nd
-read(666,*)
-read(666,*) p_i, p_j, p_k
-close(666)
-
-call random_seed(size=seed_dimension)
-allocate (seed(seed_dimension))
-do i = 1, seed_dimension
-   seed(i) = 3*2**i - 1
-end do
-call random_seed(put=seed)
-deallocate(seed)
-end subroutine iniconc
 
 subroutine gauss_noise2(gauss)
 implicit none
