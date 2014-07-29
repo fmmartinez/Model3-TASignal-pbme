@@ -1,8 +1,9 @@
 program modeliiimain
+use m_map, only: iniconq_d
 use m_vib
 implicit none
 
-real(8),parameter :: pi = 3.1415926535d0, twopi = 2d0*pi
+real(8),parameter :: pi=3.1415926535d0, twopi = 2d0*pi
 
 character(len=2) :: c_ng,c_nt
 character(len=9) :: fmt1,fmt2
@@ -13,7 +14,7 @@ complex(8),dimension(:,:),allocatable :: pol,hm
 
 integer :: a,b,i,j,is,it,cnt,p_i,p_j,p_k,ib,nmap,ng,nb,nd,basispc
 integer :: np,nmcs,mcs,nmds,seed_dimension,nosc,step1,bath,init,nfile
-integer,dimension(:),allocatable :: seed,g
+integer,dimension(:),allocatable :: seed1,g
 
 real(8) :: gauss,dt,dt2,kondo,delta,beta,ome_max,lumda_d,eg,eb,ed,mu,e0,e1,sij,vomega
 real(8) :: step2,dnmcs,tau1,omega1,time3,lambdacheck
@@ -39,7 +40,7 @@ allocate(lambda(1:nmap,1:nmap),llg(1:nmap,1:nmap),llb(1:nmap,1:nmap),lld(1:nmap,
 allocate(llgb(1:nmap,1:nmap),llbg(1:nmap,1:nmap))
 allocate(llbd(1:nmap,1:nmap),lldb(1:nmap,1:nmap))
 
-call iniconq_d()
+call iniconq_d(nosc,lumda_d,ome_max,ome,c2,kosc)
 
 dt  = twopi*dt
 dt2 = 0.5d0*dt
@@ -290,11 +291,12 @@ read(666,*) p_i, p_j, p_k
 close(666)
 
 call random_seed(size=seed_dimension)
-allocate (seed(seed_dimension))
+allocate (seed1(seed_dimension))
 do i = 1, seed_dimension
-   seed(i) = 3*2**i - 1
+   seed1(i) = 3*2**i - 1
 end do
-call random_seed(put=seed)
-deallocate(seed)
+call random_seed(put=seed1)
+deallocate(seed1)
 end subroutine iniconc
+
 end program modeliiimain

@@ -2,6 +2,10 @@ module m_map
 use ifport
 implicit none
 
+private
+
+public iniconq_d
+
 real(8),parameter :: pi=3.1415926535d0
 
 contains
@@ -420,7 +424,7 @@ implicit none
 
 complex(8),dimension(:,:),intent(inout) :: hm
 
-integer :: nmap
+integer :: nmap,i
 
 real(8) :: trace
 
@@ -696,7 +700,7 @@ real(8),dimension(:),intent(in) :: kosc,c2
 
 integer :: i, nosc
 
-real(8) :: uj,qbeta
+real(8) :: uj,qbeta,gauss
 
 nosc = size(kosc)
 
@@ -715,10 +719,14 @@ end do
 
 end subroutine sampling_class
 
-subroutine iniconq_d()
+subroutine iniconq_d(nosc,lumda_d,ome_max,ome,c2,kosc)
 implicit none
 
 integer :: i
+integer,intent(in) :: nosc
+
+real(8),intent(in) :: ome_max,lumda_d
+real(8),dimension(:),intent(inout) :: ome,c2,kosc
 
 do i = 1, nosc
    ome(i)  = tan(i*atan(ome_max)/nosc)
@@ -741,4 +749,5 @@ call random_number(z2)
 gauss = sqrt(-2d0*log(z1))*cos(twopi*z2)
 
 end subroutine gauss_noise2
+
 end module m_map
