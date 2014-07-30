@@ -122,13 +122,13 @@ MonteCarlo: do mcs = 1, nmcs
    pol(ib,cnt) = pol(ib,cnt) + fact
 
    call get_a(c2,ome,x,a1,a2)
-   call get_force(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
 
    MolecularDynamics: do it = 1, nmds
       call get_pulsefield(np,tau,it,dt,time,g,E0,E1,omega,et)
       
       call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
-      !call make_hm_traceless(nmap,hm)
+      call make_hm_traceless(nmap,hm)
       !write(*,*) 'hm'
       !write(*,fmt2) dble(hm)
 
@@ -141,13 +141,13 @@ MonteCarlo: do mcs = 1, nmcs
       call update_a2(c2,x,a2)
 
       call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
-      !call make_hm_traceless(nmap,hm)
+      call make_hm_traceless(nmap,hm)
 
       call update_rm(dt,hm,pm,rm)
 
       call update_pm(dt2,hm,rm,pm)
 
-      call get_force(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
 
       call update_p(dt2,f,p)
 
