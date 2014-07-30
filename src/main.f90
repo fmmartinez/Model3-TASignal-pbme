@@ -76,114 +76,15 @@ end if
 fmt1 = '('//trim(c_ng)//'f10.5)'
 fmt2 = '('//trim(c_nt)//'f10.5)'
 
-call get_lambda_eigenvectors(ng,nb,nd,eg,eb,ed,delta,vomega, &
-                              sgg,sgb,sgd,sbg,sbb,sbd,sdg,sdb,sdd,lambda,hs)
+!call get_lambda_eigenvectors(ng,nb,nd,eg,eb,ed,delta,vomega, &
+!                              sgg,sgb,sgd,sbg,sbb,sbd,sdg,sdb,sdd,lambda,hs)
 
-
-!check orthonormality of lambdas
-do i = 1, nmap
-   do j = 1, nmap
-      lambdacheck = dot_product(lambda(1:nmap,i),lambda(1:nmap,j))
-      if (lambdacheck > 1d-7) then
-         if (i /= j) then
-            print *, 'warning in orthonormality of these lambda eigenvectors'
-            print *, i, j, lambdacheck
-            print *, ''
-            do is = 1, nmap
-               print *, is
-               print *, lambda(1:nmap,is)
-            end do
-         end if
-      end if
-   end do
-end do
-
-!parameters for faster calculation
-llg = 0d0
-do i = 1, nmap
-   do j = 1, nmap
-      llg(i,j) = dot_product(lambda(1:ng,i),lambda(1:ng,j))
-   end do
-end do
-
-!write(*,*) 'products'
-!write(*,fmt2) llg
-
-llb = 0d0
-do i = 1, nmap
-   do j = 1, nmap
-      llb(i,j) = dot_product(lambda(ng+1:ng+nb,i),lambda(ng+1:ng+nb,j))
-   end do
-end do
-
-!write(*,*) 'products'
-!write(*,fmt2) llb
+call get_preh(ng,nb,nd,eg,eb,ed,delta,vomega,hs)
 
 lld = 0d0
-do i = 1, nmap
-   do j = 1, nmap
-      lld(i,j) = dot_product(lambda(ng+nb+1:nmap,i),lambda(ng+nb+1:nmap,j))
-   end do
+do i = ng+nb+1,nmap
+   lld(i,i) = 1d0
 end do
-
-!write(*,*) 'products'
-!write(*,fmt2) lld
-
-llgb = 0d0
-do i = 1, nmap
-   do j = 1, nmap
-      do a = 1, ng
-         do b = ng+1, ng+nb
-            llgb(i,j) = llgb(i,j) + lambda(a,i)*lambda(b,j)*sgb(a,b-ng)
-         end do
-      end do
-   end do
-end do
-
-!write(*,*) 'products-overlaps gb'
-!write(*,fmt2) llgb
-
-llbg = 0d0
-do i = 1, nmap
-   do j = 1, nmap
-      do a = ng+1, ng+nb
-         do b = 1, ng
-            llbg(i,j) = llbg(i,j) + lambda(a,i)*lambda(b,j)*sbg(a-ng,b)
-         end do
-      end do
-   end do
-end do
-
-!write(*,*) 'products-overlaps gb'
-!write(*,fmt2) llbg
-
-llbd = 0d0
-do i = 1, nmap
-   do j = 1, nmap
-      do a = ng+1, ng+nb
-         do b = ng+nb+1, nmap
-            llbd(i,j) = llbd(i,j) + lambda(a,i)*lambda(b,j)*sbd(a-ng,b-ng-nb)
-         end do
-      end do
-   end do
-end do
-
-!write(*,*) 'products-overlaps bd'
-!write(*,fmt2) llbd
-
-lldb = 0d0
-do i = 1, nmap
-   do j = 1, nmap
-      do a = ng+nb+1, nmap
-         do b = ng+1, ng+nb
-            lldb(i,j) = lldb(i,j) + lambda(a,i)*lambda(b,j)*sdb(a-ng-nb,b-ng)
-         end do
-      end do
-   end do
-end do
-
-!write(*,*) 'products-overlaps db'
-!write(*,fmt2) lldb
 
 cnt = 1
 
