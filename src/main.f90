@@ -81,10 +81,26 @@ fmt2 = '('//trim(c_nt)//'f10.5)'
 
 call get_preh(ng,nb,nd,eg,eb,ed,delta,vomega,hs)
 
+
+!declare variables for faster calculations
+llg = 0d0
+do i = 1, ng
+   llg(i,i) = 1d0
+end do
+llb = 0d0
+do i = ng+1, ng+nb
+   llb(i,i) = 1d0
+end do
 lld = 0d0
 do i = ng+nb+1,nmap
    lld(i,i) = 1d0
 end do
+
+llgb = 0d0
+llgb(1:ng,ng+1:ng+nb) = hs(1:ng,ng+1:ng+nb)
+
+llbg = 0d0
+llbg(ng+1:ng+nb,1:ng) = hs(ng+1:ng+nb,1:ng)
 
 cnt = 1
 
