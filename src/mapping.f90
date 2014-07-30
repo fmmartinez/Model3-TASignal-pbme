@@ -566,13 +566,13 @@ do j = 1, n
    end do
 
    tn = trace/nmap
-   
-   f(j) = f(j) + tn
+   !for force trace is substracted, in hamiltonian the trace is added (F = -Div V)
+   f(j) = f(j) - tn
 
    do a = 1, nmap
       do b = 1, nmap
          if (a == b) then
-            f(j) = f(j) - (dh(a,b) - tn)*(rm(a)*rm(b) + pm(a)*pm(b) - 1d0)
+            f(j) = f(j) - (dh(a,b) - tn)*(rm(a)*rm(b) + pm(a)*pm(b))
          else
             f(j) = f(j) - dh(a,b)*(rm(a)*rm(b) + pm(a)*pm(b))
          end if
