@@ -1,0 +1,10 @@
+#folders with runs (usually tests)
+e*-map*/
+
+#executables and compiled source
+*.out
+*.o
+
+#logs
+fort.*
+*.log
