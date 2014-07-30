@@ -81,7 +81,7 @@ do j = 0, 7
    end do
 end do
 
-open(102,file='intensity.out')
+open(102,file='intensity.log')
 
 do i = 0, nmds
    do j = 0, nf

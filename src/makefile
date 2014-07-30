@@ -1,4 +1,4 @@
-all: a.out intensity.out
+all: a.out int.out
 		rm -rf *.o *.mod
 		mv a.out ../
 		mv intensity.out ../
@@ -8,8 +8,8 @@ a.out: vbmode.o mapping.o main.o
 		ifort -mkl -O2 -o a.out main.o mapping.o vbmode.o
 
 #executable for calculating signal
-intensity.out: intensity.f90
-		ifort -o intensity.out intensity.f90
+int.out: intensity.f90
+		ifort -o int.out intensity.f90
 
 #prerrequisites
 mapping.o: mapping.f90
