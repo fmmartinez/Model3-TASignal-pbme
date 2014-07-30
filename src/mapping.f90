@@ -4,7 +4,11 @@ implicit none
 
 private
 
-public iniconq_d
+public iniconq_d,get_preh,sampling_class,sampling_mapng,get_coeff,get_fact,get_a
+public get_force_traceless
+public get_pulsefield
+public get_hm2,make_hm_traceless
+public update_p,update_x,update_pm,update_rm,update_a2
 
 real(8),parameter :: pi=3.1415926535d0
 
