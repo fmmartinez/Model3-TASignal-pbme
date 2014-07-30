@@ -719,6 +719,87 @@ end do
 
 end subroutine sampling_class
 
+subroutine get_preh(ng,nb,nd,eg,eb,ed,delta,omega,hs)
+use m_vib
+implicit none
+
+integer,parameter :: ip = 10000
+
+character(len=2) :: c_nt
+character(len=9) :: fmt1
+
+integer :: i,j,nt
+integer,intent(in) :: ng,nb,nd
+
+real(8) :: cg,cb,cd,uint,lint,alpha
+real(8),intent(in) :: eg,eb,ed,delta,omega
+real(8),dimension(:,:),intent(out) :: hs
+
+nt = ng + nb + nd
+
+cg = 0d0
+cb = 2d0*sqrt(10d0)/omega
+cd = cb/2d0
+
+uint = cb + 6d0
+lint = cb - 6d0
+
+alpha = sqrt(omega)
+
+hs = 0d0
+
+!fill g|g
+do i = 1, ng
+   hs(i,i) = eg + (i - 0.5d0)*omega
+end do
+!fill g|b
+do i = 1, ng
+   do j = ng+1, ng+nb
+      hs(i,j) = integrate_t_phiphi(ip,lint,uint,i,cg,j-ng,cb,alpha)
+   end do
+end do
+!fill g|d
+!not necessary
+!fill b|g
+do i = ng+1, ng+nb
+   do j = 1, ng
+      hs(i,j) = integrate_t_phiphi(ip,lint,uint,i-ng,cb,j,cg,alpha)
+   end do
+end do
+!fill b|b
+do i = ng+1, ng+nb
+   hs(i,i) = eb + (i -ng - 0.5d0)*omega
+end do
+!fill b|d
+do i = ng+1, ng+nb
+   do j = ng+nb+1, nt
+      hs(i,j) = delta*integrate_t_phiphi(ip,lint,uint,i-ng,cb,j-ng-nb,cd,alpha)
+   end do
+end do
+!fill d|g
+!not necessary
+!fill d|b
+do i = ng+nb+1, nt
+   do j = ng+1, ng+nb
+      hs(i,j) = delta*integrate_t_phiphi(ip,lint,uint,i-ng-nb,cd,j-ng,cb,alpha)
+   end do
+end do
+!fill d|d
+do i = ng+nb+1, nt
+   hs(i,i) = ed + (i -ng -nb - 0.5d0)*omega
+end do
+
+if (nt > 9) then
+   write(c_nt,'(i2)') nt
+else
+   write(c_nt,'(i1)') nt
+end if
+
+fmt1 = '('//trim(c_nt)//'f10.5)'
+
+!print fmt1, hs
+end subroutine get_preh
+
 subroutine iniconq_d(nosc,lumda_d,ome_max,ome,c2,kosc)
 implicit none
 
