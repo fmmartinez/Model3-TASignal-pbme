@@ -125,6 +125,7 @@ pi	pj	pk
 		intfile.close()
 		mapfile.close()
 
-#copy executable
+#copy executables
+shutil.copy2('int.out',rod)
 for i in range(0,8*np):
 	shutil.copy2('a.out',d[i])
