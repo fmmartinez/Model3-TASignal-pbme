@@ -29,17 +29,22 @@ np = 31
 
 d = []
 
+#make root directory
+rod = 'TA%s%s%s' % (str(bg),str(bb),str(bd))
 #make list of the working directories
 for j in range(0,8):
 	for i in range(0,10):
-		dir = 'e' + str(j) + '-map0' + str(i)
+		dir = rod + '/e%s-sec0%s' % (str(j),str(i))
 		d.append(dir)
 
 	for i in range(10,np):
-		dir = 'e' + str(j) + '-map' + str(i)
+		dir = rod + '/e%s-sec%s' % (str(j),str(i))
 		d.append(dir)
 
 #Generate Folders if not present
+if not(os.path.exists(rod)):
+	os.mkdir(rod)
+
 for i in range(0,np*8):
    if not(os.path.exists(d[i])):
       os.mkdir(d[i])
