@@ -27,6 +27,9 @@ bd = 25
 #number of runs per signal, n+1 because 0 is included
 np = 31
 
+#walltime for simulations
+wallt = '50:00:00'
+
 d = []
 
 #make root directory
@@ -49,7 +52,8 @@ for i in range(0,np*8):
    if not(os.path.exists(d[i])):
       os.mkdir(d[i])
 
-
+#############
+#	Generation of submit.pbs, map.in and intesity.in
 for k in range(0,8):
 	e0 = 1.5
 	e1 = 0.15
@@ -58,40 +62,48 @@ for k in range(0,8):
 		p1 = 0
 		p2 = 0
 		p3 = 0
+		p0name = rod + '_000-'
 	if (k == 1):
 		p1 = 0
 		p2 = 1
 		p3 = 0
+		p0name = rod + '_010-'
 	if (k == 2):
 		p1 = 0
 		p2 = 0
 		p3 = 1
+		p0name = rod + '_001-'
 	if (k == 3):
 		p1 = 0
 		p2 = 1
 		p3 = 1
+		p0name = rod + '_011-'
 	if (k == 4):
 		p1 = 1
 		p2 = 0
 		p3 = 0
+		p0name = rod + '_100-'
 	if (k == 5):
 		p1 = 1
 		p2 = 1
 		p3 = 0
+		p0name = rod + '_110-'
 	if (k == 6):
 		p1 = 1
 		p2 = 0
 		p3 = 1
+		p0name = rod + '_101-'
 	if (k == 7):
 		p1 = 1
 		p2 = 1
 		p3 = 1
+		p0name = rod + '_111-'
 	
 	for i in range(0,np):
 		ii = i + k*np
-		mapfile = open('./' + d[ii]  + '/map.in','w')
-		intfile = open('./' + d[ii]  + '/intensity.in','w')
-		
+		mapfile = open('./' + d[ii] + '/map.in','w')
+		intfile = open('./' + d[ii] + '/intensity.in','w')
+		subfile = open('./' + d[ii] + '/submit.pbs','w')
 #		print 'cp map ../'+d[ii]+'/.'
 
 #write each map.in file
@@ -121,9 +133,23 @@ pi	pj	pk
 %s	%s	0.045	260	%s''' % (str(e1),nmdsstep,delay)
 		
 		intfile.write(m)
+	
+#write each submit.pbs
 		
+		n = '''#!/bin/bash -l
+#PBS -S /bin/bash
+#PBS -N %s%s
+#PBS -l walltime=%s
+
+cd $PBS_O_WORKDIR
+time ./a.out < map.in''' %(p0name,str(i),wallt)
+		
+		subfile.write(n)
+		
+		#
 		intfile.close()
 		mapfile.close()
+		subfile.close()
 
 #copy executables
 shutil.copy2('int.out',rod)
