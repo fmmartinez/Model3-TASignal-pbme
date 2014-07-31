@@ -1,7 +1,7 @@
 all: a.out int.out
 		rm -rf *.o *.mod
 		mv a.out ../
-		mv intensity.out ../
+		mv int.out ../
 
 #executable for dynamics
 a.out: vbmode.o mapping.o main.o

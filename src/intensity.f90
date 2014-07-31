@@ -7,8 +7,8 @@ real(8),parameter :: time1 = 0.30, pi= 3.1415926535d0, dts = 5d-5
 real(8),parameter :: dt = 2d0*pi*dts
 
 character(len=1) :: dir
-character(len=23) :: fname1
-character(len=24) :: fname2
+character(len=20) :: fname1
+character(len=21) :: fname2
 character(len=5) :: fname3,fname4
 
 complex(8) :: integral,integrand,pul
@@ -39,10 +39,10 @@ do j = 0, 7
       
       write(dir,'(i1.1)') j
       
-      write(fname1,'(a4,i1.1,a4,i2.2,a12)') '../e',j,'-map',i,'/polariz.out'
+      write(fname1,'(a1,i1.1,a4,i2.2,a12)') 'e',j,'-sec',i,'/polariz.out'
       open(x,file=fname1)
 
-      write(fname2,'(a4,i1.1,a4,i2.2,a13)') '../e',j,'-map',i,'/intensity.in'
+      write(fname2,'(a1,i1.1,a4,i2.2,a13)') 'e',j,'-sec',i,'/intensity.in'
       open(y,file=fname2)
 
       read(y,*)
