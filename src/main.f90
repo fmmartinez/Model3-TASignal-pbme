@@ -204,7 +204,7 @@ read(666,*) tau1,omega1,time3,step1,step2
 read(666,*)
 read(666,*) bath,init,nfile
 read(666,*)
-read(666,*) basispc,ng,nb,nd
+read(666,*) ng,nb,nd
 read(666,*)
 read(666,*) p_i, p_j, p_k
 close(666)
