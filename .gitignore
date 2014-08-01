@@ -1,5 +1,6 @@
 #folders with runs (usually tests)
 e*-map*/
+TA*/
 
 #executables and compiled source
 *.out
