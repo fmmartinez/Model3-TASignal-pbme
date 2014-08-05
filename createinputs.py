@@ -27,6 +27,15 @@ bd = 25
 #number of runs per signal, n+1 because 0 is included
 np = 31
 
+#pulses stuff
+e0 = 1.5
+e1 = 0.15
+
+tau1 = '0.045'
+omega1 = '260'
+tau2 = '0.045'
+omega2 = '260'
+
 #walltime for simulations
 wallt = '50:00:00'
 
@@ -55,9 +64,6 @@ for i in range(0,np*8):
 #############
 #	Generation of submit.pbs, map.in and intesity.in
 for k in range(0,8):
-	e0 = 1.5
-	e1 = 0.15
-	
 	if (k == 0):
 		p1 = 0
 		p2 = 0
@@ -113,15 +119,15 @@ NMCS	NMDS	seed	DT	LUMDA_D
 %s	%s	90	%s	10
 Eg	Eb	Ed	mu	E0	E1	beta	vib_omega
 0	240	240	1	%s	%s	0.24	37.7
-TAU	OMEGA	time3	step1	step2
-0.045	260	0.15	%s	0.04
+TAU1	OMEGA1	TAU2	OMEGA2	time3	step1	step2
+%s	%s	%s	%s	0.15	%s	0.04
 BATH(0:B EQ 1:T EQ)	INIT	NFILE
 0	3	%s
 basisfg	b	d
 %s	%s	%s
 pi	pj	pk
-%s	%s	%s''' % (str(deltahere),nmcs,nmds,dt,e0,e1,step,str(i),str(bg),
-					str(bb),str(bd),str(p1),str(p2),str(p3))
+%s	%s	%s''' % (str(deltahere),nmcs,nmds,dt,e0,e1,tau1,omega1,tau2,omega2,
+					step,str(i),str(bg),str(bb),str(bd),str(p1),str(p2),str(p3))
 
 		mapfile.write(l)
 
