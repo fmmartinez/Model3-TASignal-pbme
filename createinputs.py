@@ -19,13 +19,16 @@ nmcs = '10000'
 #dt0   = '1.d-4'
 #step0 = '64'
 
+#number of runs per signal, n+1 because 0 is included
+np = 31
+
+#if np doubles this number halves, as well as step above
+step2 = '0.04'
+
 #number of basis functions per center
 bg = 20
 bb = 25
 bd = 25
-
-#number of runs per signal, n+1 because 0 is included
-np = 31
 
 #pulses stuff
 e0 = 1.5
@@ -120,19 +123,19 @@ NMCS	NMDS	seed	DT	LUMDA_D
 Eg	Eb	Ed	mu	E0	E1	beta	vib_omega
 0	240	240	1	%s	%s	0.24	37.7
 TAU1	OMEGA1	TAU2	OMEGA2	time3	step1	step2
-%s	%s	%s	%s	0.15	%s	0.04
+%s	%s	%s	%s	0.15	%s	%s
 BATH(0:B EQ 1:T EQ)	INIT	NFILE
 0	3	%s
 basisfg	b	d
 %s	%s	%s
 pi	pj	pk
 %s	%s	%s''' % (str(deltahere),nmcs,nmds,dt,e0,e1,tau1,omega1,tau2,omega2,
-					step,str(i),str(bg),str(bb),str(bd),str(p1),str(p2),str(p3))
+					step,str(step2),str(i),str(bg),str(bb),str(bd),str(p1),str(p2),str(p3))
 
 		mapfile.write(l)
 
 		nmdsstep = str(int(nmds) + i*int(step))
-		delay = str(0.15 + i*0.04)
+		delay = str(0.15 + i*step2)
 
 #write each intensity.in file
 		m='''E1	NMDS	tau	omega	delay
