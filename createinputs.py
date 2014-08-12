@@ -8,7 +8,7 @@ deltahere = 0.0
 #new values
 dt    = '5d-5'
 nmds  = '954'
-step  = '128'
+step  = '64'
 
 nmcs = '10000'
 
@@ -20,10 +20,10 @@ nmcs = '10000'
 #step0 = '64'
 
 #number of runs per signal, n+1 because 0 is included
-np = 31
+np = 61
 
 #if np doubles this number halves, as well as step above
-step2 = '0.04'
+step2 = 0.02
 
 #number of basis functions per center
 bg = 20
@@ -37,7 +37,7 @@ e1 = 0.15
 tau1 = '0.045'
 omega1 = '260'
 tau2 = '0.045'
-omega2 = '260'
+omega2 = '220'
 
 #walltime for simulations
 wallt = '50:00:00'
@@ -139,7 +139,7 @@ pi	pj	pk
 
 #write each intensity.in file
 		m='''E1	NMDS	tau	omega	delay
-%s	%s	0.045	260	%s''' % (str(e1),nmdsstep,delay)
+%s	%s	%s	%s	%s''' % (str(e1),nmdsstep,tau2,omega2,delay)
 		
 		intfile.write(m)
 	
