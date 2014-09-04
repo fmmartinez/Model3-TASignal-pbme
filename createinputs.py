@@ -147,8 +147,11 @@ pi	pj	pk
 		
 		n = '''#!/bin/bash -l
 #PBS -S /bin/bash
+#PBS -r n
 #PBS -N %s%s
 #PBS -l walltime=%s
+#PBS -l procs=1
+#PBS -l mem=256mb
 
 cd $PBS_O_WORKDIR
 time ./a.out < map.in''' %(p0name,str(i),wallt)
