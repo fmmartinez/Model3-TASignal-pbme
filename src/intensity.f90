@@ -1,7 +1,7 @@
 program signal
 implicit none
 
-integer,parameter :: nf = 10, maxnmds = 20000
+integer,parameter :: maxnmds = 20000
 
 real(8),parameter :: time1 = 0.30, pi= 3.1415926535d0, dts = 5d-5
 real(8),parameter :: dt = 2d0*pi*dts
@@ -12,14 +12,25 @@ character(len=21) :: fname2
 character(len=5) :: fname3,fname4
 
 complex(8) :: integral,integrand,pul
-complex(8),dimension(0:maxnmds,0:nf) :: pol, f_pol_000, f_pol_010, f_pol_001
-complex(8),dimension(0:maxnmds,0:nf) :: f_pol_011, f_pol_100, f_pol_110, f_pol_101
-complex(8),dimension(0:maxnmds,0:nf) :: f_pol_111,pulset,prod
+complex(8),dimension(:,:),allocatable :: pol, f_pol_000, f_pol_010, f_pol_001
+complex(8),dimension(:,:),allocatable :: f_pol_011, f_pol_100, f_pol_110, f_pol_101
+complex(8),dimension(:,:),allocatable :: f_pol_111,pulset,prod
 
-integer :: i,it,j,k,switch,x,y,voidi,nmds
+integer :: i,it,j,k,switch,x,y,voidi,nmds,nf
 
-real(8),dimension(0:nf) :: f_re1,f_im1,f_re2,f_im2,delay, time, tau
+real(8),dimension(:),allocatable :: f_re1,f_im1,f_re2,f_im2,delay, time, tau
 real(8) :: gaussian,intensity,voidr,treal,timag,omega,e1
+
+print *, 'number of points to resolve'
+read(*,*) nf
+
+allocate(pol(0:maxnmds,0:nf),f_pol_000(0:maxnmds,0:nf),f_pol_010(0:maxnmds,0:nf))
+allocate(f_pol_001(0:maxnmds,0:nf),f_pol_011(0:maxnmds,0:nf),f_pol_100(0:maxnmds,0:nf))
+allocate(f_pol_110(0:maxnmds,0:nf),f_pol_101(0:maxnmds,0:nf),f_pol_111(0:maxnmds,0:nf))
+allocate(pulset(0:maxnmds,0:nf),prod(0:maxnmds,0:nf))
+
+allocate(f_re1(0:nf),f_im1(0:nf),f_re2(0:nf),f_im2(0:nf))
+allocate(delay(0:nf),time(0:nf),tau(0:nf))
 
 pol = dcmplx(0d0,0d0)
 f_pol_000 = dcmplx(0d0,0d0)
