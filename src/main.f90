@@ -102,9 +102,11 @@ end do
 
 llgb = 0d0
 llgb(1:ng,ng+1:ng+nb) = hs(1:ng,ng+1:ng+nb)
+hs(1:ng,ng+1:ng+nb) = 0d0
 
 llbg = 0d0
 llbg(ng+1:ng+nb,1:ng) = hs(ng+1:ng+nb,1:ng)
+hs(ng+1:ng+nb,1:ng) = 0d0
 
 cnt = 1
 
