@@ -37,10 +37,10 @@ e1 = 0.15
 tau1 = '0.045'
 omega1 = '260'
 tau2 = '0.045'
-omega2 = '220'
+omega2 = '260'
 
 #walltime for simulations
-wallt = '50:00:00'
+wallt = '10:00:00'
 
 d = []
 
