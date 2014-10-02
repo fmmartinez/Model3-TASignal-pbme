@@ -1,5 +1,4 @@
 module m_map
-use ifport
 implicit none
 
 private
