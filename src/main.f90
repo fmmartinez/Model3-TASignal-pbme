@@ -15,7 +15,7 @@ complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f
 complex(8),dimension(:,:),allocatable :: pol,hm
 
 integer :: a,b,i,j,is,it,cnt,p_i,p_j,p_k,ib,nmap,ng,nb,nd,basispc
-integer :: np,nmcs,mcs,nmds,seed_dimension,nosc,step1,bath,init,nfile
+integer :: np,nmcs,mcs,nmds,seed_dimension,nosc,step1,bath,init,nfile,i_c
 integer,dimension(:),allocatable :: seed1,g
 
 real(8) :: gauss,dt,dt2,kondo,delta,beta,ome_max,lumda_d,eg,eb,ed,mu,e0,e1,sij,vomega
@@ -152,6 +152,20 @@ MonteCarlo: do mcs = 1, nmcs
       call update_rm(dt,hm,pm,rm)
 
       call update_pm(dt2,hm,rm,pm)
+      
+      !check for NaN
+      do i_c = 1, nmap
+         if (rm(i_c).ne.rm(i_c) .or. pm(i_c).ne.pm(i_c)) then
+            print *, 'trajectory', mcs, 'of', nmcs
+            print *, 'rm'
+            print fmt2, rm
+            print *, 'pm'
+            print fmt2, pm
+            print *, 'hm'
+            print fmt2, hm
+            stop
+         end if
+      end do
 
       call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
 
