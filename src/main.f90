@@ -157,6 +157,7 @@ MonteCarlo: do mcs = 1, nmcs
       do i_c = 1, nmap
          if (rm(i_c).ne.rm(i_c) .or. pm(i_c).ne.pm(i_c)) then
             print *, 'trajectory', mcs, 'of', nmcs
+            print *, 'time step', it, 'of', nmds
             print *, 'rm'
             print fmt2, rm
             print *, 'pm'
