@@ -170,7 +170,12 @@ MonteCarlo: do mcs = 1, nmcs
       !   end if
       !end do
       if (mcs == 4236) then
-         write(111,fmt2) 
+         write(110,'(i6,140f10.5)') it, real(rm), aimag(rm)
+         write(220,'(i6,140f10.5)') it, real(pm), aimag(pm)
+         write(330,*) it
+         write(330,fmt2) real(hm)
+         write(330,fmt2) aimag(hm)
+         if (it == 3992) stop
       end if
 
       call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
