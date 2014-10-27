@@ -154,19 +154,19 @@ MonteCarlo: do mcs = 1, nmcs
       call update_pm(dt2,hm,rm,pm)
       
       !check for NaN
-      do i_c = 1, nmap
-         if (rm(i_c).ne.rm(i_c) .or. pm(i_c).ne.pm(i_c)) then
-            print *, 'trajectory', mcs, 'of', nmcs
-            print *, 'time step', it, 'of', nmds
-            print *, 'rm'
-            print fmt2, rm
-            print *, 'pm'
-            print fmt2, pm
-            print *, 'hm'
-            print fmt2, hm
-            stop
-         end if
-      end do
+      !do i_c = 1, nmap
+      !   if (rm(i_c).ne.rm(i_c) .or. pm(i_c).ne.pm(i_c)) then
+      !      print *, 'trajectory', mcs, 'of', nmcs
+      !      print *, 'time step', it, 'of', nmds
+      !      print *, 'rm'
+      !      print fmt2, rm
+      !      print *, 'pm'
+      !      print fmt2, pm
+      !      print *, 'hm'
+      !      print fmt2, hm
+      !      stop
+      !   end if
+      !end do
 
       call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
 
