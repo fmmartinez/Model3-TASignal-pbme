@@ -9,6 +9,7 @@ real(8),parameter :: pi=3.1415926535d0, twopi = 2d0*pi
 
 character(len=2) :: c_ng,c_nt
 character(len=9) :: fmt1,fmt2
+character(len=12):: fmt3
 
 complex(8) :: coeff,fact,a1,a2,et
 complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f
@@ -79,6 +80,7 @@ end if
 
 fmt1 = '('//trim(c_ng)//'f10.5)'
 fmt2 = '('//trim(c_nt)//'f10.5)'
+fmt3 = '(i6,'//trim(c_nt)//'f10.5)'
 
 !call get_lambda_eigenvectors(ng,nb,nd,eg,eb,ed,delta,vomega, &
 !                              sgg,sgb,sgd,sbg,sbb,sbd,sdg,sdb,sdd,lambda,hs)
@@ -167,6 +169,9 @@ MonteCarlo: do mcs = 1, nmcs
       !      stop
       !   end if
       !end do
+      if (mcs == 4236) then
+         write(111,fmt2) 
+      end if
 
       call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
 
