@@ -170,11 +170,11 @@ MonteCarlo: do mcs = 1, nmcs
       !   end if
       !end do
       if (mcs == 7755) then
-         write(110,'(i6,140f10.5)') it, real(rm), aimag(rm)
-         write(220,'(i6,140f10.5)') it, real(pm), aimag(pm)
+         write(110,'(i6,32f10.5)') it, real(rm), aimag(rm)
+         write(220,'(i6,32f10.5)') it, real(pm), aimag(pm)
          write(330,*) it
-         write(330,fmt2) real(hm)
-         write(330,fmt2) aimag(hm)
+         write(330,'(16f10.5)') real(hm)
+         write(330,'(16f10.5)') aimag(hm)
          if (it == 3854) stop
       end if
 
