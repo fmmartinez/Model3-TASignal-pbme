@@ -358,7 +358,7 @@ n = size(pm)
 
 do i = 1, n
    do j = 1, n
-      pm(i) = pm(i) - dt*hm(j,i)*rm(j)
+      pm(i) = pm(i) - dt*hm(i,j)*rm(j)
    end do
 end do
 
