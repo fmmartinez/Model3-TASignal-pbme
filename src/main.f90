@@ -175,6 +175,9 @@ MonteCarlo: do mcs = 1, nmcs
          write(330,*) it
          write(330,'(16f10.5)') real(hm)
          write(330,'(16f10.5)') aimag(hm)
+         write(440,'(i6,40f10.5)') it, real(x), aimag(x)
+         write(550,'(i6,40f10.5)') it, real(p), aimag(p)
+         write(660,'(i6,40f10.5)') it, real(f), aimag(f)
          if (it == 3854) stop
       end if
 
