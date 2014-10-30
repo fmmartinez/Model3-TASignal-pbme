@@ -178,13 +178,15 @@ MonteCarlo: do mcs = 1, nmcs
          write(440,'(i6,40f10.5)') it, real(x), aimag(x)
          write(550,'(i6,40f10.5)') it, real(p), aimag(p)
          write(660,'(i6,40f10.5)') it, real(f), aimag(f)
-         print *, 'c2'
-         print '(20f10.5)', c2
-         print *, 'ome'
-         print '(20f10.5)', ome
-         print *, 'kosc'
-         print '(20f10.5)', kosc
-         if (it == 3854) stop
+         if (it == 3854) then
+            print *, 'c2'
+            print '(20f10.5)', c2
+            print *, 'ome'
+            print '(20f10.5)', ome
+            print *, 'kosc'
+            print '(20f10.5)', kosc
+            stop
+         end if
       end if
 
       call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
