@@ -284,7 +284,7 @@ integer :: i,n
 
 real(8),dimension(:),intent(in) :: c2
 
-n = size(x)
+n = size(c2)
 
 a2 = cmplx(0d0,0d0)
 do i = 1, n
