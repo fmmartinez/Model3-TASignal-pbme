@@ -557,7 +557,7 @@ real(8),dimension(:,:),allocatable :: dh
 allocate(dh(1:nmap,1:nmap))
 allocate(c(1:nmap))
 
-n = size(x)
+n = size(c2)
 
 !getting product for faster calculation
 c = cmplx(0d0,0d0)
