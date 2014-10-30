@@ -542,6 +542,7 @@ end subroutine get_force
 subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
 implicit none
 
+complex(8),dimension(:),allocatable :: c
 complex(8),dimension(:),intent(in) :: rm,pm,x
 complex(8),dimension(:),intent(out) :: f
 
@@ -554,10 +555,17 @@ real(8),dimension(:,:),intent(in) :: lld
 real(8),dimension(:,:),allocatable :: dh
 
 allocate(dh(1:nmap,1:nmap))
+allocate(c(1:nmap))
 
 n = size(x)
 
-f = 0d0
+!getting product for faster calculation
+c = cmplx(0d0,0d0)
+do a = 1, nmap
+   c(a) = (rm(a)*rm(a) + pm(a)*pm(a))
+end do
+
+f = cmplx(0d0,0d0)
 do j = 1, n
    f(j) = -kosc(j)*x(j)
    
@@ -572,7 +580,7 @@ do j = 1, n
    !for force trace is substracted, in hamiltonian the trace is added (F = -Div V)
    f(j) = f(j) - tn
    do a = 1, nmap
-      f(j) = f(j) - (dh(a,a) - tn)*(rm(a)*rm(a) + pm(a)*pm(a))
+      f(j) = f(j) - (dh(a,a) - tn)*c(a)
    end do
 end do
 
