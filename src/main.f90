@@ -179,6 +179,8 @@ MonteCarlo: do mcs = 1, nmcs
          write(550,'(i6,40f10.5)') it, real(p), aimag(p)
          write(660,'(i6,40f10.5)') it, real(f), aimag(f)
          write(770,'(i6,40f10.5)') it, real(et), aimag(et)
+         write(880,'(i6,2f10.5)')it, real(sum(p)), aimag(sum(p))
+         write(990,'(i6,2f10.5)')it, real(sum(f)), aimag(sum(f))
          if (it == 3854) then
             print *, 'c2'
             print '(20f10.5)', c2
