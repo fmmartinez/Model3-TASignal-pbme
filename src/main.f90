@@ -12,7 +12,7 @@ character(len=9) :: fmt1,fmt2
 character(len=12):: fmt3
 
 complex(8) :: coeff,fact,a1,a2,et
-complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fc
+complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fc,fm
 complex(8),dimension(:,:),allocatable :: pol,hm
 
 integer :: a,b,i,j,is,it,cnt,p_i,p_j,p_k,ib,nmap,ng,nb,nd,basispc
@@ -30,7 +30,7 @@ call iniconc()
 
 nmap = ng + nb + nd
 
-allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc),f(1:nosc),fc(1:nosc))
+allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc),f(1:nosc),fc(1:nosc),fm(1:nosc))
 allocate(tau(1:np),omega(1:np),time(1:np),g(1:np))
 allocate(rm(1:nmap),pm(1:nmap))
 
@@ -130,7 +130,7 @@ MonteCarlo: do mcs = 1, nmcs
    pol(ib,cnt) = pol(ib,cnt) + fact
 
    call get_a(c2,ome,x,a1,a2)
-   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc)
+   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc,fm)
 
    MolecularDynamics: do it = 1, nmds
       call get_pulsefield(np,tau,it,dt,time,g,E0,E1,omega,et)
@@ -170,29 +170,29 @@ MonteCarlo: do mcs = 1, nmcs
       !   end if
       !end do
       if (mcs == 7755) then
-         write(110,'(i6,32f10.5)') it, real(rm), aimag(rm)
-         write(220,'(i6,32f10.5)') it, real(pm), aimag(pm)
+         write(110,'(i6,32f15.5)') it, real(rm), aimag(rm)
+         write(220,'(i6,32f15.5)') it, real(pm), aimag(pm)
          write(330,*) it
-         write(330,'(16f10.5)') real(hm)
-         write(330,'(16f10.5)') aimag(hm)
-         write(440,'(i6,40f10.5)') it, real(x), aimag(x)
-         write(550,'(i6,40f10.5)') it, real(p), aimag(p)
-         write(660,'(i6,40f10.5)') it, real(f), aimag(f)
-         write(770,'(i6,40f10.5)') it, real(et), aimag(et)
-         write(880,'(i6,2f10.5)')it, real(sum(fc)), aimag(sum(fc))
-         write(990,'(i6,2f10.5)')it, real(sum(f)), aimag(sum(f))
+         write(330,'(16f15.5)') real(hm)
+         write(330,'(16f15.5)') aimag(hm)
+         write(440,'(i6,40f15.5)') it, real(x), aimag(x)
+         write(550,'(i6,40f15.5)') it, real(p), aimag(p)
+         write(660,'(i6,40f15.5)') it, real(f), aimag(f)
+         write(770,'(i6,40f15.5)') it, real(et), aimag(et)
+         !write(880,'(i6,2f10.5)')it, real(sum(fc)), aimag(sum(fc))
+         write(990,'(i6,6f15.5)')it, real(sum(f)), aimag(sum(f)), real(sum(fc)), aimag(sum(fc)), real(sum(fm)), aimag(sum(fm))
          if (it == 3854) then
             print *, 'c2'
-            print '(20f10.5)', c2
+            print '(20f15.5)', c2
             print *, 'ome'
-            print '(20f10.5)', ome
+            print '(20f15.5)', ome
             print *, 'kosc'
-            print '(20f10.5)', kosc
+            print '(20f15.5)', kosc
             stop
          end if
       end if
 
-      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc)
+      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc,fm)
 
       call update_p(dt2,f,p)
 

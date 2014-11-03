@@ -539,12 +539,12 @@ end do
 
 end subroutine get_force
 
-subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fclas)
+subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fclas,fmap)
 implicit none
 
 complex(8),dimension(:),allocatable :: c
 complex(8),dimension(:),intent(in) :: rm,pm,x
-complex(8),dimension(:),intent(out) :: f,fclas
+complex(8),dimension(:),intent(out) :: f,fclas,fmap
 
 integer :: a,b,i,j,n
 integer,intent(in) :: nmap,ng,nb
@@ -583,6 +583,8 @@ do j = 1, n
    do a = 1, nmap
       f(j) = f(j) - (dh(a,a) - tn)*c(a)
    end do
+
+   fmap(j) = f(j) - fclas(j)
 end do
 
 end subroutine get_force_traceless
