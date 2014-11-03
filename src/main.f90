@@ -12,7 +12,7 @@ character(len=9) :: fmt1,fmt2
 character(len=12):: fmt3
 
 complex(8) :: coeff,fact,a1,a2,et
-complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f
+complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fc
 complex(8),dimension(:,:),allocatable :: pol,hm
 
 integer :: a,b,i,j,is,it,cnt,p_i,p_j,p_k,ib,nmap,ng,nb,nd,basispc
@@ -30,7 +30,7 @@ call iniconc()
 
 nmap = ng + nb + nd
 
-allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc),f(1:nosc))
+allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc),f(1:nosc),fc(1:nosc))
 allocate(tau(1:np),omega(1:np),time(1:np),g(1:np))
 allocate(rm(1:nmap),pm(1:nmap))
 
@@ -130,7 +130,7 @@ MonteCarlo: do mcs = 1, nmcs
    pol(ib,cnt) = pol(ib,cnt) + fact
 
    call get_a(c2,ome,x,a1,a2)
-   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc)
 
    MolecularDynamics: do it = 1, nmds
       call get_pulsefield(np,tau,it,dt,time,g,E0,E1,omega,et)
@@ -179,7 +179,7 @@ MonteCarlo: do mcs = 1, nmcs
          write(550,'(i6,40f10.5)') it, real(p), aimag(p)
          write(660,'(i6,40f10.5)') it, real(f), aimag(f)
          write(770,'(i6,40f10.5)') it, real(et), aimag(et)
-         write(880,'(i6,2f10.5)')it, real(sum(p)), aimag(sum(p))
+         write(880,'(i6,2f10.5)')it, real(sum(fc)), aimag(sum(fc))
          write(990,'(i6,2f10.5)')it, real(sum(f)), aimag(sum(f))
          if (it == 3854) then
             print *, 'c2'
@@ -192,7 +192,7 @@ MonteCarlo: do mcs = 1, nmcs
          end if
       end if
 
-      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc)
 
       call update_p(dt2,f,p)
 

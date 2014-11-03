@@ -539,12 +539,12 @@ end do
 
 end subroutine get_force
 
-subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fclas)
 implicit none
 
 complex(8),dimension(:),allocatable :: c
 complex(8),dimension(:),intent(in) :: rm,pm,x
-complex(8),dimension(:),intent(out) :: f
+complex(8),dimension(:),intent(out) :: f,fclas
 
 integer :: a,b,i,j,n
 integer,intent(in) :: nmap,ng,nb
@@ -568,6 +568,7 @@ end do
 f = cmplx(0d0,0d0)
 do j = 1, n
    f(j) = -kosc(j)*x(j)
+   fclas(j) = f(j)
    
    dh = (lld)*c2(j)
    
