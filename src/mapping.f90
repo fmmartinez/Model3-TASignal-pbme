@@ -13,6 +13,34 @@ real(8),parameter :: pi=3.1415926535d0
 
 contains
 
+subroutine get_total_energy(nosc,nmap,kosc,p,x,hm,rm,pm,h)
+implicit none
+
+complex(8),intent(out) :: h
+complex(8),intent(in),dimension(:) :: x,p,rm,pm
+complex(8),intent(in),dimension(:,:) :: hm
+
+integer :: i,j
+integer,intent(in) :: nmap,nosc
+
+real(8),intent(in),dimension(:) :: kosc
+
+h = cmplx(0d0,0d0)
+
+!classical
+do i = 1, nosc
+   h = h + 0.5d0*p(i) + kosc(i)*x(i)*x(i)
+end do
+
+!mapping
+do i = 1, nmap
+   do j = 1, nmap
+      h = h + 0.5d0*hm(i,j)*(rm(i)*rm(j) + pm(i)*pm(j))
+   end do
+end do
+
+end subroutine get_total_energy
+
 subroutine get_coeff(ng,beta,omega,rm,pm,coeff)
 implicit none
 
