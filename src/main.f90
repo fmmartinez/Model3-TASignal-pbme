@@ -11,7 +11,7 @@ character(len=2) :: c_ng,c_nt
 character(len=9) :: fmt1,fmt2
 character(len=12):: fmt3
 
-complex(8) :: coeff,fact,a1,a2,et
+complex(8) :: coeff,fact,a1,a2,et,tracen
 complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fc,fm
 complex(8),dimension(:,:),allocatable :: pol,hm
 
@@ -136,7 +136,7 @@ MonteCarlo: do mcs = 1, nmcs
       call get_pulsefield(np,tau,it,dt,time,g,E0,E1,omega,et)
       
       call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
-      call make_hm_traceless(nmap,hm)
+      call make_hm_traceless(nmap,tracen,hm)
       !write(*,*) 'hm'
       !write(*,fmt2) dble(hm)
 
@@ -149,7 +149,7 @@ MonteCarlo: do mcs = 1, nmcs
       call update_a2(c2,x,a2)
 
       call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
-      call make_hm_traceless(nmap,hm)
+      call make_hm_traceless(nmap,tracen,hm)
 
       call update_rm(dt,hm,pm,rm)
 
