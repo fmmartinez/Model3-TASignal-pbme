@@ -2,7 +2,7 @@ program modeliiimain
 use m_map, only: iniconq_d,get_preh,sampling_class,sampling_mapng,get_coeff,  &
                   get_fact,get_a,get_force_traceless,get_pulsefield,get_hm2,  &
                   make_hm_traceless,update_p,update_x,update_pm,update_rm,    &
-                  update_a2
+                  update_a2,get_total_energy
 implicit none
 
 real(8),parameter :: pi=3.1415926535d0, twopi = 2d0*pi
