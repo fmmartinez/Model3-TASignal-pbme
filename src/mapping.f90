@@ -593,7 +593,7 @@ n = size(c2)
 !getting product for faster calculation
 c = cmplx(0d0,0d0)
 do a = 1, nmap
-   c(a) = (rm(a)*rm(a) + pm(a)*pm(a))
+   c(a) = 0.5d0*(rm(a)*rm(a) + pm(a)*pm(a))
 end do
 
 f = cmplx(0d0,0d0)
@@ -601,7 +601,7 @@ do j = 1, n
    f(j) = -kosc(j)*x(j)
    fclas(j) = f(j)
    
-   dh = (lld)*c2(j)
+   dh = (lld)*c2(j)*2d0
    
    trace = 0d0
    do a = 1, nmap
