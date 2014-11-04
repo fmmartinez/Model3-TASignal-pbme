@@ -14,10 +14,11 @@ real(8),parameter :: pi=3.1415926535d0
 
 contains
 
-subroutine get_total_energy(nosc,nmap,kosc,p,x,hm,rm,pm,h)
+subroutine get_total_energy(nosc,nmap,kosc,p,x,hm,trace,rm,pm,h)
 implicit none
 
 complex(8),intent(out) :: h
+complex(8),intent(in) :: trace
 complex(8),intent(in),dimension(:) :: x,p,rm,pm
 complex(8),intent(in),dimension(:,:) :: hm
 
@@ -39,6 +40,8 @@ do i = 1, nmap
       h = h + 0.5d0*hm(i,j)*(rm(i)*rm(j) + pm(i)*pm(j))
    end do
 end do
+
+h = h + trace
 
 end subroutine get_total_energy
 
