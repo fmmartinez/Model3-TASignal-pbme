@@ -11,7 +11,7 @@ character(len=2) :: c_ng,c_nt
 character(len=9) :: fmt1,fmt2
 character(len=12):: fmt3
 
-complex(8) :: coeff,fact,a1,a2,et,tracen,etotal
+complex(8) :: coeff,fact,a1,a2,et,tracen,etotal,ecla,emap
 complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fc,fm
 complex(8),dimension(:,:),allocatable :: pol,hm
 
@@ -179,8 +179,8 @@ MonteCarlo: do mcs = 1, nmcs
          write(550,'(i6,40f15.5)') it, real(p), aimag(p)
          write(660,'(i6,40f15.5)') it, real(f), aimag(f)
          write(770,'(i6,40f15.5)') it, real(et), aimag(et)
-         call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal)
-         write(880,'(i6,2f10.5)')it, real(etotal), aimag(etotal)
+         call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
+         write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla), aimag(ecla), real(emap), aimag(ecla)
          write(990,'(i6,6f15.5)')it, real(sum(f)), aimag(sum(f)), real(sum(fc)), aimag(sum(fc)), real(sum(fm)), aimag(sum(fm))
          if (it == 3854) then
             print *, 'c2'
