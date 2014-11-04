@@ -8,6 +8,7 @@ public get_force_traceless
 public get_pulsefield
 public get_hm2,make_hm_traceless
 public update_p,update_x,update_pm,update_rm,update_a2
+public get_total_energy
 
 real(8),parameter :: pi=3.1415926535d0
 
@@ -450,16 +451,15 @@ do a = 1, nmap
 end do
 end subroutine get_hm2
 
-subroutine make_hm_traceless(nmap,hm)
+subroutine make_hm_traceless(nmap,trace,hm)
 implicit none
 
+complex(8),intent(out) :: trace
 complex(8),dimension(:,:),intent(inout) :: hm
 
 integer :: nmap,i
 
-real(8) :: trace
-
-trace = 0d0
+trace = cmplx(0d0,0d0)
 do i = 1, nmap
    trace = trace + hm(i,i)
 end do
