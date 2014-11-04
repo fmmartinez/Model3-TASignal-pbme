@@ -180,7 +180,7 @@ MonteCarlo: do mcs = 1, nmcs
          write(660,'(i6,40f15.5)') it, real(f), aimag(f)
          write(770,'(i6,40f15.5)') it, real(et), aimag(et)
          call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
-         write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla), aimag(ecla), real(emap), aimag(ecla)
+         write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla), aimag(ecla), real(emap), aimag(emap)
          write(990,'(i6,6f15.5)')it, real(sum(f)), aimag(sum(f)), real(sum(fc)), aimag(sum(fc)), real(sum(fm)), aimag(sum(fm))
          if (it == 3854) then
             print *, 'c2'
