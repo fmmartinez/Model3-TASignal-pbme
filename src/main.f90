@@ -156,42 +156,36 @@ MonteCarlo: do mcs = 1, nmcs
       call update_pm(dt2,hm,rm,pm)
       
       !check for NaN
-      !do i_c = 1, nmap
-      !   if (rm(i_c).ne.rm(i_c) .or. pm(i_c).ne.pm(i_c)) then
-      !      print *, 'trajectory', mcs, 'of', nmcs
-      !      print *, 'time step', it, 'of', nmds
-      !      print *, 'rm'
-      !      print fmt2, rm
-      !      print *, 'pm'
-      !      print fmt2, pm
-      !      print *, 'hm'
-      !      print fmt2, hm
-      !      stop
-      !   end if
-      !end do
-      if (mcs == 7755) then
-         write(110,'(i6,32f15.5)') it, real(rm), aimag(rm)
-         write(220,'(i6,32f15.5)') it, real(pm), aimag(pm)
-         write(330,*) it
-         write(330,'(16f15.5)') real(hm)
-         write(330,'(16f15.5)') aimag(hm)
-         write(440,'(i6,40f15.5)') it, real(x), aimag(x)
-         write(550,'(i6,40f15.5)') it, real(p), aimag(p)
-         write(660,'(i6,40f15.5)') it, real(f), aimag(f)
-         write(770,'(i6,40f15.5)') it, real(et), aimag(et)
-         call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
-         write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla), aimag(ecla), real(emap), aimag(emap)
-         write(990,'(i6,6f15.5)')it, real(sum(f)), aimag(sum(f)), real(sum(fc)), aimag(sum(fc)), real(sum(fm)), aimag(sum(fm))
-         if (it == 3854) then
-            print *, 'c2'
-            print '(20f15.5)', c2
-            print *, 'ome'
-            print '(20f15.5)', ome
-            print *, 'kosc'
-            print '(20f15.5)', kosc
+      do i_c = 1, nmap
+         if (rm(i_c).ne.rm(i_c) .or. pm(i_c).ne.pm(i_c)) then
+            print *, 'trajectory', mcs, 'of', nmcs
+            print *, 'time step', it, 'of', nmds
             stop
          end if
-      end if
+      end do
+      !if (mcs == 7755) then
+      !   write(110,'(i6,32f15.5)') it, real(rm), aimag(rm)
+      !   write(220,'(i6,32f15.5)') it, real(pm), aimag(pm)
+      !   write(330,*) it
+      !   write(330,'(16f15.5)') real(hm)
+      !   write(330,'(16f15.5)') aimag(hm)
+      !   write(440,'(i6,40f15.5)') it, real(x), aimag(x)
+      !   write(550,'(i6,40f15.5)') it, real(p), aimag(p)
+      !   write(660,'(i6,40f15.5)') it, real(f), aimag(f)
+      !   write(770,'(i6,40f15.5)') it, real(et), aimag(et)
+      !   call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
+      !   write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla), aimag(ecla), real(emap), aimag(emap)
+      !   write(990,'(i6,6f15.5)')it, real(sum(f)), aimag(sum(f)), real(sum(fc)), aimag(sum(fc)), real(sum(fm)), aimag(sum(fm))
+      !   if (it == 3854) then
+      !      print *, 'c2'
+      !      print '(20f15.5)', c2
+      !      print *, 'ome'
+      !      print '(20f15.5)', ome
+      !      print *, 'kosc'
+      !      print '(20f15.5)', kosc
+      !      stop
+      !   end if
+      !end if
 
       call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc,fm)
 
@@ -201,6 +195,11 @@ MonteCarlo: do mcs = 1, nmcs
       call get_fact(nmap,llgb,llbg,rm,pm,fact)
       fact = fact*coeff*mu
       pol(ib,cnt) = pol(ib,cnt) + fact
+
+      if (mcs == nmcs) then
+         call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
+         write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla),aimag(ecla), real(emap), aimag(emap)
+      end if
    end do MolecularDynamics
 end do MonteCarlo
 
