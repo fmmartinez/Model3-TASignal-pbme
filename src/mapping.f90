@@ -98,13 +98,25 @@ integer,intent(in) :: nmap
 real(8),dimension(:,:),intent(in) :: llgb,llbg
 
 fact = cmplx(0d0,0d0)
-do a = 1, nmap
-   do b = 1, nmap
-      if (a == b) then
-         fact = fact + (llgb(a,b) + llbg(a,b))*(rm(a)*rm(b) + pm(a)*pm(b) - 1d0)
-      else
-         fact = fact + (llgb(a,b) + llbg(a,b))*(rm(a)*rm(b) + pm(a)*pm(b))
-      end if
+!do a = 1, nmap
+!   do b = 1, nmap
+!      if (a == b) then
+!         fact = fact + (llgb(a,b) + llbg(a,b))*(rm(a)*rm(b) + pm(a)*pm(b) - 1d0)
+!      else
+!         fact = fact + (llgb(a,b) + llbg(a,b))*(rm(a)*rm(b) + pm(a)*pm(b))
+!      end if
+!   end do
+!end do
+
+do a = 1,ng
+   do b = ng+1,ng+nb
+      fact = fact + llgb(a,b)*(rm(a)*rm(b) + pm(a)*pm(b))
+   end do
+end do
+
+do a = ng+1,ng+nb
+   do b = 1,ng
+      fact = fact + llbg(a,b)*(rm(a)*rm(b) + pm(a)*pm(b))
    end do
 end do
 
