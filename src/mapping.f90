@@ -444,23 +444,23 @@ end do
 
 end subroutine update_p
 
-subroutine get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
+subroutine get_hm2(nmap,ng,nb,mu,et,a1,a2,hs,hm)
 implicit none
 
-integer :: a,b
-integer,intent(in) :: nmap
+integer :: i
+integer,intent(in) :: nmap,ng,nb
 
 complex(8),intent(in) :: et,a1,a2
 complex(8),dimension(:,:),intent(out) :: hm
 
 real(8),intent(in) :: mu
-real(8),dimension(:,:),intent(in) :: hs,llgb,llbg,lld
+real(8),dimension(:,:),intent(in) :: hs
 
-hm = 0d0
-do a = 1, nmap
-   do b = 1, nmap
-      hm(a,b) = hs(a,b) + lld(a,b)*(a1+a2) + (llgb(a,b) + llbg(a,b))*(-mu*et)
-   end do
+hm = hs
+hm(1:ng,ng+1:ng+nb) = hs(1:ng,ng+1:ng+nb)*(-mu*et)
+hm(ng+1:ng+nb,1:ng) = hs(ng+1:ng+nb,1:ng)*(-mu*et)
+do i = ng+nb+1, nmap
+      hm(i,i) = hm(i,i) + (a1+a2)
 end do
 end subroutine get_hm2
 

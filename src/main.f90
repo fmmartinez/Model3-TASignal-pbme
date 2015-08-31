@@ -105,11 +105,9 @@ end do
 
 llgb = 0d0
 llgb(1:ng,ng+1:ng+nb) = hs(1:ng,ng+1:ng+nb)
-hs(1:ng,ng+1:ng+nb) = 0d0
 
 llbg = 0d0
 llbg(ng+1:ng+nb,1:ng) = hs(ng+1:ng+nb,1:ng)
-hs(ng+1:ng+nb,1:ng) = 0d0
 
 cnt = 1
 
@@ -136,7 +134,7 @@ MonteCarlo: do mcs = 1, nmcs
    MolecularDynamics: do it = 1, nmds
       call get_pulsefield(np,tau,it,dt,time,g,E0,E1,omega,et)
       
-      call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
+      call get_hm2(nmap,ng,nb,mu,et,a1,a2,hs,hm)
       call make_hm_traceless(nmap,tracen,hm)
       !write(*,*) 'hm'
       !write(*,fmt2) dble(hm)
@@ -149,7 +147,7 @@ MonteCarlo: do mcs = 1, nmcs
       
       call update_a2(c2,x,a2)
 
-      call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
+      call get_hm2(nmap,ng,nb,mu,et,a1,a2,hs,hm)
       call make_hm_traceless(nmap,tracen,hm)
 
       call update_rm(dt,hm,pm,rm)
