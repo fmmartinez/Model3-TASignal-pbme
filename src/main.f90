@@ -12,7 +12,7 @@ character(len=9) :: fmt1,fmt2
 character(len=12):: fmt3
 
 complex(8) :: coeff,fact,a1,a2,et,tracen,etotal,ecla,emap
-complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fc,fm
+complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fcla,ftra,fqua
 complex(8),dimension(:,:),allocatable :: pol,hm
 
 integer :: a,b,i,j,is,it,cnt,p_i,p_j,p_k,ib,nmap,ng,nb,nd,basispc
@@ -30,7 +30,8 @@ call iniconc()
 
 nmap = ng + nb + nd
 
-allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc),f(1:nosc),fc(1:nosc),fm(1:nosc))
+allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc))
+allocate(f(1:nosc),fcla(1:nosc),ftra(1:nosc),fqua(1:nosc))
 allocate(tau(1:np),omega(1:np),time(1:np),g(1:np))
 allocate(rm(1:nmap),pm(1:nmap))
 
@@ -122,16 +123,15 @@ MonteCarlo: do mcs = 1, nmcs
    call sampling_mapng(init,rm,pm)
    
    call get_coeff(ng,beta,vomega,rm,pm,coeff)
-!   coeff = (rm(1)**2 + pm(1)**2 - 0.5d0)
+   
    call get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
-!   fact = fact*coeff*mu
    stop
 
    ib = 1
    pol(ib,cnt) = pol(ib,cnt) + fact
 
    call get_a(c2,ome,x,a1,a2)
-   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc,fm)
+   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fcla,ftra,fqua)
 
    MolecularDynamics: do it = 1, nmds
       call get_pulsefield(np,tau,it,dt,time,g,E0,E1,omega,et)
@@ -188,13 +188,14 @@ MonteCarlo: do mcs = 1, nmcs
       !   end if
       !end if
 
-      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fc,fm)
+      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fcla,ftra,fqua)
 
       call update_p(dt2,f,p)
 
       ib = it + 1
+     
       call get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
-!      fact = fact*coeff*mu
+      
       pol(ib,cnt) = pol(ib,cnt) + fact
 
       if (mcs == nmcs) then

@@ -580,22 +580,21 @@ end do
 
 end subroutine get_force
 
-subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fclas,fmap)
+subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fcla,ftra,fqua)
 implicit none
 
 complex(8),dimension(:),allocatable :: c
 complex(8),dimension(:),intent(in) :: rm,pm,x
-complex(8),dimension(:),intent(out) :: f,fclas,fmap
+complex(8),dimension(:),intent(out) :: f,fcla,ftra,fqua
 
 integer :: a,b,i,j,n
 integer,intent(in) :: nmap,ng,nb
 
-real(8) :: trace,tn
 real(8),dimension(:),intent(in) :: kosc,c2
 real(8),dimension(:,:),intent(in) :: lld
-real(8),dimension(:,:),allocatable :: dh
+!real(8),dimension(:,:),allocatable :: mdh
 
-allocate(dh(1:nmap,1:nmap))
+!allocate(dh(1:nmap,1:nmap))
 allocate(c(1:nmap))
 
 n = size(c2)
@@ -603,29 +602,40 @@ n = size(c2)
 !getting product for faster calculation
 c = cmplx(0d0,0d0)
 do a = 1, nmap
-   c(a) = 0.5d0*(rm(a)*rm(a) + pm(a)*pm(a))
+   c(a) = 0.5d0*(rm(a)**2 + pm(a)**2)
 end do
 
 f = cmplx(0d0,0d0)
+fcla = cmplx(0d0,0d0)
+ftra = cmplx(0d0,0d0)
+fqua = cmplx(0d0,0d0)
+
 do j = 1, n
-   f(j) = -kosc(j)*x(j)
-   fclas(j) = f(j)
+   fcla(j) = -kosc(j)*x(j)
    
-   dh = (lld)*c2(j)*2d0
+!   mdh = (lld)*c2(j)*2d0
    
-   trace = 0d0
-   do a = 1, nmap
-      trace = trace + dh(a,a)
-   end do
+   ftra(j) = (nmap-ng-nb)*(-2d0*c2(j))/nmap
+!   do a = 1, nmap
+!      trace = trace + dh(a,a)
+!   end do
 
-   tn = trace/nmap
+!   tn = trace/nmap
    !for force trace is substracted, in hamiltonian the trace is added (F = -Div V)
-   f(j) = f(j) - tn
-   do a = 1, nmap
-      f(j) = f(j) - (dh(a,a) - tn)*c(a)
+!   f(j) = f(j) - tn
+!   do a = 1, nmap
+!      f(j) = f(j) - (dh(a,a) - tn)*c(a)
+!   end do
+
+!   fmap(j) = f(j) - fclas(j)
+   do a = 1, ng+nb
+      fqua(j) = fqua(j) + (-ftra(j))*c(a)
+   end do
+   do a = ng+nb+1,nmap
+      fqua(j) = fqua(j) + (-2d0*c2(j)-ftra(j))*c(a)
    end do
 
-   fmap(j) = f(j) - fclas(j)
+   f(j) = fcla(j) + ftra(j) + fqua(j)
 end do
 
 end subroutine get_force_traceless
