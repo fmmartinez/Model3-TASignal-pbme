@@ -125,9 +125,6 @@ MonteCarlo: do mcs = 1, nmcs
 !   coeff = (rm(1)**2 + pm(1)**2 - 0.5d0)
    call get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
 !   fact = fact*coeff*mu
-   print '(9f20.12)', llgb
-   print '(9f20.12)', llbg
-   print *, fact
    stop
 
    ib = 1
