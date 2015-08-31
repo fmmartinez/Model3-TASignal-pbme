@@ -86,15 +86,17 @@ deallocate(exp_be)
 deallocate(prob)
 end subroutine get_coeff
 
-subroutine get_fact(nmap,llgb,llbg,rm,pm,fact)
+subroutine get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
 implicit none
 
+complex(8),intent(in) :: coeff
 complex(8),intent(out) :: fact
 complex(8),dimension(:),intent(in) :: rm,pm
 
 integer :: a,b
-integer,intent(in) :: nmap
+integer,intent(in) :: ng,nb
 
+real(8),intent(in) :: mu
 real(8),dimension(:,:),intent(in) :: llgb,llbg
 
 fact = cmplx(0d0,0d0)
@@ -120,6 +122,7 @@ do a = ng+1,ng+nb
    end do
 end do
 
+fact = fact*coeff*mu
 end subroutine get_fact
 
 subroutine get_lambda_eigenvectors(ng,nb,nd,eg,eb,ed,delta,omega,&
