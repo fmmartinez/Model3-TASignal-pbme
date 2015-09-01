@@ -10,3 +10,6 @@ focuseddebug/
 #logs
 fort.*
 *.log
+
+#temporal files
+*.swp
