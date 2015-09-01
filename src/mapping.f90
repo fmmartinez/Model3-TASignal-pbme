@@ -8,10 +8,46 @@ public get_force_traceless
 public get_pulsefield
 public get_hm2,make_hm_traceless
 public update_p,update_x,update_pm,update_rm,update_a2
+public get_total_energy
 
 real(8),parameter :: pi=3.1415926535d0
 
 contains
+
+subroutine get_total_energy(nosc,nmap,kosc,p,x,hm,trace,rm,pm,h,hcl,hma)
+implicit none
+
+complex(8),intent(out) :: h,hcl,hma
+complex(8),intent(in) :: trace
+complex(8),intent(in),dimension(:) :: x,p,rm,pm
+complex(8),intent(in),dimension(:,:) :: hm
+
+integer :: i,j
+integer,intent(in) :: nmap,nosc
+
+real(8),intent(in),dimension(:) :: kosc
+
+h = cmplx(0d0,0d0)
+
+!classical
+do i = 1, nosc
+   h = h + 0.5d0*(p(i)**2 + kosc(i)*x(i)**2)
+end do
+
+hcl = h
+
+!mapping
+do i = 1, nmap
+   do j = 1, nmap
+      h = h + 0.5d0*hm(i,j)*(rm(i)*rm(j) + pm(i)*pm(j))
+   end do
+end do
+
+h = h + trace
+
+hma = h - hcl
+
+end subroutine get_total_energy
 
 subroutine get_coeff(ng,beta,omega,rm,pm,coeff)
 implicit none
@@ -50,28 +86,34 @@ deallocate(exp_be)
 deallocate(prob)
 end subroutine get_coeff
 
-subroutine get_fact(nmap,llgb,llbg,rm,pm,fact)
+subroutine get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
 implicit none
 
+complex(8),intent(in) :: coeff
 complex(8),intent(out) :: fact
 complex(8),dimension(:),intent(in) :: rm,pm
 
 integer :: a,b
-integer,intent(in) :: nmap
+integer,intent(in) :: ng,nb
 
+real(8),intent(in) :: mu
 real(8),dimension(:,:),intent(in) :: llgb,llbg
 
 fact = cmplx(0d0,0d0)
-do a = 1, nmap
-   do b = 1, nmap
-      if (a == b) then
-         fact = fact + (llgb(a,b) + llbg(a,b))*(rm(a)*rm(b) + pm(a)*pm(b) - 1d0)
-      else
-         fact = fact + (llgb(a,b) + llbg(a,b))*(rm(a)*rm(b) + pm(a)*pm(b))
-      end if
+
+do a = 1,ng
+   do b = ng+1,ng+nb
+      fact = fact + llgb(a,b)*(rm(a)*rm(b) + pm(a)*pm(b))
    end do
 end do
 
+do a = ng+1,ng+nb
+   do b = 1,ng
+      fact = fact + llbg(a,b)*(rm(a)*rm(b) + pm(a)*pm(b))
+   end do
+end do
+
+fact = fact*coeff*mu
 end subroutine get_fact
 
 subroutine get_lambda_eigenvectors(ng,nb,nd,eg,eb,ed,delta,omega,&
@@ -284,7 +326,7 @@ integer :: i,n
 
 real(8),dimension(:),intent(in) :: c2
 
-n = size(x)
+n = size(c2)
 
 a2 = cmplx(0d0,0d0)
 do i = 1, n
@@ -358,7 +400,7 @@ n = size(pm)
 
 do i = 1, n
    do j = 1, n
-      pm(i) = pm(i) - dt*hm(j,i)*rm(j)
+      pm(i) = pm(i) - dt*hm(i,j)*rm(j)
    end do
 end do
 
@@ -402,36 +444,35 @@ end do
 
 end subroutine update_p
 
-subroutine get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
+subroutine get_hm2(nmap,ng,nb,mu,et,a1,a2,hs,hm)
 implicit none
 
-integer :: a,b
-integer,intent(in) :: nmap
+integer :: i
+integer,intent(in) :: nmap,ng,nb
 
 complex(8),intent(in) :: et,a1,a2
 complex(8),dimension(:,:),intent(out) :: hm
 
 real(8),intent(in) :: mu
-real(8),dimension(:,:),intent(in) :: hs,llgb,llbg,lld
+real(8),dimension(:,:),intent(in) :: hs
 
-hm = 0d0
-do a = 1, nmap
-   do b = 1, nmap
-      hm(a,b) = hs(a,b) + lld(a,b)*(a1+a2) + (llgb(a,b) + llbg(a,b))*(-mu*et)
-   end do
+hm = hs
+hm(1:ng,ng+1:ng+nb) = hs(1:ng,ng+1:ng+nb)*(-mu*et)
+hm(ng+1:ng+nb,1:ng) = hs(ng+1:ng+nb,1:ng)*(-mu*et)
+do i = ng+nb+1, nmap
+      hm(i,i) = hm(i,i) + (a1+a2)
 end do
 end subroutine get_hm2
 
-subroutine make_hm_traceless(nmap,hm)
+subroutine make_hm_traceless(nmap,trace,hm)
 implicit none
 
+complex(8),intent(out) :: trace
 complex(8),dimension(:,:),intent(inout) :: hm
 
 integer :: nmap,i
 
-real(8) :: trace
-
-trace = 0d0
+trace = cmplx(0d0,0d0)
 do i = 1, nmap
    trace = trace + hm(i,i)
 end do
@@ -539,41 +580,62 @@ end do
 
 end subroutine get_force
 
-subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fcla,ftra,fqua)
 implicit none
 
+complex(8),dimension(:),allocatable :: c
 complex(8),dimension(:),intent(in) :: rm,pm,x
-complex(8),dimension(:),intent(out) :: f
+complex(8),dimension(:),intent(out) :: f,fcla,ftra,fqua
 
 integer :: a,b,i,j,n
 integer,intent(in) :: nmap,ng,nb
 
-real(8) :: trace,tn
 real(8),dimension(:),intent(in) :: kosc,c2
 real(8),dimension(:,:),intent(in) :: lld
-real(8),dimension(:,:),allocatable :: dh
+!real(8),dimension(:,:),allocatable :: mdh
 
-allocate(dh(1:nmap,1:nmap))
+!allocate(dh(1:nmap,1:nmap))
+allocate(c(1:nmap))
 
-n = size(x)
+n = size(c2)
 
-f = 0d0
+!getting product for faster calculation
+c = cmplx(0d0,0d0)
+do a = 1, nmap
+   c(a) = 0.5d0*(rm(a)**2 + pm(a)**2)
+end do
+
+f = cmplx(0d0,0d0)
+fcla = cmplx(0d0,0d0)
+ftra = cmplx(0d0,0d0)
+fqua = cmplx(0d0,0d0)
+
 do j = 1, n
-   f(j) = -kosc(j)*x(j)
+   fcla(j) = -kosc(j)*x(j)
    
-   dh = (lld)*c2(j)
+!   mdh = (lld)*c2(j)*2d0
    
-   trace = 0d0
-   do a = 1, nmap
-      trace = trace + dh(a,a)
+   ftra(j) = (nmap-ng-nb)*(-2d0*c2(j))/nmap
+!   do a = 1, nmap
+!      trace = trace + dh(a,a)
+!   end do
+
+!   tn = trace/nmap
+   !for force trace is substracted, in hamiltonian the trace is added (F = -Div V)
+!   f(j) = f(j) - tn
+!   do a = 1, nmap
+!      f(j) = f(j) - (dh(a,a) - tn)*c(a)
+!   end do
+
+!   fmap(j) = f(j) - fclas(j)
+   do a = 1, ng+nb
+      fqua(j) = fqua(j) + (-ftra(j))*c(a)
+   end do
+   do a = ng+nb+1,nmap
+      fqua(j) = fqua(j) + (-2d0*c2(j)-ftra(j))*c(a)
    end do
 
-   tn = trace/nmap
-   !for force trace is substracted, in hamiltonian the trace is added (F = -Div V)
-   f(j) = f(j) - tn
-   do a = 1, nmap
-      f(j) = f(j) - (dh(a,a) - tn)*(rm(a)*rm(a) + pm(a)*pm(a))
-   end do
+   f(j) = fcla(j) + ftra(j) + fqua(j)
 end do
 
 end subroutine get_force_traceless

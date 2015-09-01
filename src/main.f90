@@ -2,20 +2,21 @@ program modeliiimain
 use m_map, only: iniconq_d,get_preh,sampling_class,sampling_mapng,get_coeff,  &
                   get_fact,get_a,get_force_traceless,get_pulsefield,get_hm2,  &
                   make_hm_traceless,update_p,update_x,update_pm,update_rm,    &
-                  update_a2
+                  update_a2,get_total_energy
 implicit none
 
 real(8),parameter :: pi=3.1415926535d0, twopi = 2d0*pi
 
 character(len=2) :: c_ng,c_nt
 character(len=9) :: fmt1,fmt2
+character(len=12):: fmt3
 
-complex(8) :: coeff,fact,a1,a2,et
-complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f
+complex(8) :: coeff,fact,a1,a2,et,tracen,etotal,ecla,emap
+complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fcla,ftra,fqua
 complex(8),dimension(:,:),allocatable :: pol,hm
 
 integer :: a,b,i,j,is,it,cnt,p_i,p_j,p_k,ib,nmap,ng,nb,nd,basispc
-integer :: np,nmcs,mcs,nmds,seed_dimension,nosc,step1,bath,init,nfile
+integer :: np,nmcs,mcs,nmds,seed_dimension,nosc,step1,bath,init,nfile,i_c
 integer,dimension(:),allocatable :: seed1,g
 
 real(8) :: gauss,dt,dt2,kondo,delta,beta,ome_max,lumda_d,eg,eb,ed,mu,e0,e1,sij,vomega
@@ -29,7 +30,8 @@ call iniconc()
 
 nmap = ng + nb + nd
 
-allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc),f(1:nosc))
+allocate(c2(1:nosc),kosc(1:nosc),ome(1:nosc),x(1:nosc),p(1:nosc))
+allocate(f(1:nosc),fcla(1:nosc),ftra(1:nosc),fqua(1:nosc))
 allocate(tau(1:np),omega(1:np),time(1:np),g(1:np))
 allocate(rm(1:nmap),pm(1:nmap))
 
@@ -79,6 +81,7 @@ end if
 
 fmt1 = '('//trim(c_ng)//'f10.5)'
 fmt2 = '('//trim(c_nt)//'f10.5)'
+fmt3 = '(i6,'//trim(c_nt)//'f10.5)'
 
 !call get_lambda_eigenvectors(ng,nb,nd,eg,eb,ed,delta,vomega, &
 !                              sgg,sgb,sgd,sbg,sbb,sbd,sdg,sdb,sdd,lambda,hs)
@@ -102,11 +105,9 @@ end do
 
 llgb = 0d0
 llgb(1:ng,ng+1:ng+nb) = hs(1:ng,ng+1:ng+nb)
-hs(1:ng,ng+1:ng+nb) = 0d0
 
 llbg = 0d0
 llbg(ng+1:ng+nb,1:ng) = hs(ng+1:ng+nb,1:ng)
-hs(ng+1:ng+nb,1:ng) = 0d0
 
 cnt = 1
 
@@ -120,21 +121,20 @@ MonteCarlo: do mcs = 1, nmcs
    call sampling_mapng(init,rm,pm)
    
    call get_coeff(ng,beta,vomega,rm,pm,coeff)
-!   coeff = (rm(1)**2 + pm(1)**2 - 0.5d0)
-   call get_fact(nmap,llgb,llbg,rm,pm,fact)
-   fact = fact*coeff*mu
    
+   call get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
+
    ib = 1
    pol(ib,cnt) = pol(ib,cnt) + fact
 
    call get_a(c2,ome,x,a1,a2)
-   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+   call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fcla,ftra,fqua)
 
    MolecularDynamics: do it = 1, nmds
       call get_pulsefield(np,tau,it,dt,time,g,E0,E1,omega,et)
       
-      call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
-      call make_hm_traceless(nmap,hm)
+      call get_hm2(nmap,ng,nb,mu,et,a1,a2,hs,hm)
+      call make_hm_traceless(nmap,tracen,hm)
       !write(*,*) 'hm'
       !write(*,fmt2) dble(hm)
 
@@ -146,30 +146,70 @@ MonteCarlo: do mcs = 1, nmcs
       
       call update_a2(c2,x,a2)
 
-      call get_hm2(nmap,mu,et,a1,a2,hs,llgb,llbg,lld,hm)
-      call make_hm_traceless(nmap,hm)
+      call get_hm2(nmap,ng,nb,mu,et,a1,a2,hs,hm)
+      call make_hm_traceless(nmap,tracen,hm)
 
       call update_rm(dt,hm,pm,rm)
 
       call update_pm(dt2,hm,rm,pm)
+      
+      !check for NaN
+      !do i_c = 1, nmap
+      !   if (rm(i_c).ne.rm(i_c) .or. pm(i_c).ne.pm(i_c)) then
+      !      print *, 'trajectory', mcs, 'of', nmcs
+      !      print *, 'time step', it, 'of', nmds
+      !      stop
+      !   end if
+      !end do
+      !if (mcs == 7755) then
+      !   write(110,'(i6,32f15.5)') it, real(rm), aimag(rm)
+      !   write(220,'(i6,32f15.5)') it, real(pm), aimag(pm)
+      !   write(330,*) it
+      !   write(330,'(16f15.5)') real(hm)
+      !   write(330,'(16f15.5)') aimag(hm)
+      !   write(440,'(i6,40f15.5)') it, real(x), aimag(x)
+      !   write(550,'(i6,40f15.5)') it, real(p), aimag(p)
+      !   write(660,'(i6,40f15.5)') it, real(f), aimag(f)
+      !   write(770,'(i6,40f15.5)') it, real(et), aimag(et)
+      !   call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
+      !   write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla), aimag(ecla), real(emap), aimag(emap)
+      !   write(990,'(i6,6f15.5)')it, real(sum(f)), aimag(sum(f)), real(sum(fc)), aimag(sum(fc)), real(sum(fm)), aimag(sum(fm))
+      !   if (it == 3854) then
+      !      print *, 'c2'
+      !      print '(20f15.5)', c2
+      !      print *, 'ome'
+      !      print '(20f15.5)', ome
+      !      print *, 'kosc'
+      !      print '(20f15.5)', kosc
+      !      stop
+      !   end if
+      !end if
 
-      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f)
+      call get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fcla,ftra,fqua)
 
       call update_p(dt2,f,p)
 
       ib = it + 1
-      call get_fact(nmap,llgb,llbg,rm,pm,fact)
-      fact = fact*coeff*mu
+     
+      call get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
+      
       pol(ib,cnt) = pol(ib,cnt) + fact
+
+      if (mcs == nmcs) then
+         call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
+         write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla),aimag(ecla), real(emap), aimag(emap)
+      end if
+
+      if ((pol(ib,cnt) /= pol(ib,cnt)).or.(pol(ib,cnt)-1 == pol(ib,cnt))) then
+         print *, 'there is overflow in', it, mcs
+      end if
    end do MolecularDynamics
 end do MonteCarlo
 
 dnmcs = dble(nmcs)
 open(333,file="polariz.out")
 do ib = 1, nmds + 1
-!   pol_tot(ib) = -pol(ib,1) + pol(ib,2) + pol(ib,3) - pol(ib,4) + pol(ib,5)
-!   pol_tot(ib) = pol_tot(ib) - pol(ib,6) - pol(ib,7) + pol(ib,8)
-   pol_tot(ib) = pol(ib,1)/dnmcs
+   pol_tot(ib) = pol(ib,cnt)/dnmcs
    write(333,*) time(3), ib-1, dble(pol_tot(ib)), aimag(pol_tot(ib))
 end do
 

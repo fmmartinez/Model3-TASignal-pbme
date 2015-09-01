@@ -1,6 +1,7 @@
 #folders with runs (usually tests)
 e*-map*/
 TA*/
+focuseddebug/
 
 #executables and compiled source
 *.out
@@ -9,3 +10,6 @@ TA*/
 #logs
 fort.*
 *.log
+
+#temporal files
+*.swp
