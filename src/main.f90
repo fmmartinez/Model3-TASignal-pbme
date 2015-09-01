@@ -206,9 +206,7 @@ end do MonteCarlo
 dnmcs = dble(nmcs)
 open(333,file="polariz.out")
 do ib = 1, nmds + 1
-!   pol_tot(ib) = -pol(ib,1) + pol(ib,2) + pol(ib,3) - pol(ib,4) + pol(ib,5)
-!   pol_tot(ib) = pol_tot(ib) - pol(ib,6) - pol(ib,7) + pol(ib,8)
-   pol_tot(ib) = pol(ib,1)/dnmcs
+   pol_tot(ib) = pol(ib,cnt)/dnmcs
    write(333,*) time(3), ib-1, dble(pol_tot(ib)), aimag(pol_tot(ib))
 end do
 
