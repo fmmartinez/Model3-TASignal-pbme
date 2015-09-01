@@ -123,7 +123,6 @@ MonteCarlo: do mcs = 1, nmcs
    call get_coeff(ng,beta,vomega,rm,pm,coeff)
    
    call get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
-   stop
 
    ib = 1
    pol(ib,cnt) = pol(ib,cnt) + fact
@@ -199,6 +198,10 @@ MonteCarlo: do mcs = 1, nmcs
       if (mcs == nmcs) then
          call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
          write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla),aimag(ecla), real(emap), aimag(emap)
+      end if
+
+      if ((pol(ib,cnt) /= pol(ib,cnt)).or.(pol(ib,cnt)-1 == pol(ib,cnt))) then
+         print *, 'there is overflow in', it, mcs
       end if
    end do MolecularDynamics
 end do MonteCarlo
