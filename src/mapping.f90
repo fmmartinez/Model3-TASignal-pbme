@@ -31,7 +31,7 @@ h = cmplx(0d0,0d0)
 
 !classical
 do i = 1, nosc
-   h = h + 0.5d0*p(i) + kosc(i)*x(i)*x(i)
+   h = h + 0.5d0*(p(i)**2 + kosc(i)*x(i)**2)
 end do
 
 hcl = h
