@@ -11,7 +11,7 @@ dataname = argv[1]
 #30 directories plus the zero one
 np = 31
 #truncation for running a short part of the trajectory (top should be less than 31)
-top = 11
+top = 31
 
 d = []
 
