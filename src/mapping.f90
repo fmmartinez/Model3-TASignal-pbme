@@ -70,10 +70,10 @@ do i = 1, ng
    !exp_be(i) = exp(-beta*omega*(i - 0.5d0))
    !exp_be(i) = exp(-1.44d0*(i - 0.5d0))
    exp_be(i) = exp(-2.29d-1*(i - 0.5d0))
-   !z = z + exp_be(i)
+   z = z + exp_be(i)
 end do
 
-prob = exp_be!/z
+prob = exp_be/z
 
 coeff = cmplx(0d0,0d0)
 !only diagonal because in the ngxng matrix by construction their lambdas are
