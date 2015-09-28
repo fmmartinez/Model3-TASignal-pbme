@@ -3,14 +3,14 @@ import os
 import shutil
 
 #run value
-deltahere = 1.0
+deltahere = 0.0
 
 #new values
-dt    = '5d-5'
-nmds  = '954'
-step  = '128'
+dt    = '1d-4'
+nmds  = '477'
+step  = '32'
 
-nmcs = '1000'
+nmcs = '10000'
 
 #original values
 #double check that dt, nmds and step are related with these!!!
@@ -20,15 +20,15 @@ nmcs = '1000'
 #step0 = '64'
 
 #number of runs per signal, n+1 because 0 is included
-np = 31
+np = 61
 
 #if np doubles this number halves, as well as step above
-step2 = 0.04
+step2 = 0.02
 
 #number of basis functions per center
-bg = 10
-bb = 15
-bd = 15
+bg = 20
+bb = 25
+bd = 25
 
 #pulses stuff
 e0 = 0.9
@@ -40,7 +40,7 @@ tau2 = '0.045'
 omega2 = '260'
 
 #walltime for simulations
-wallt = '10:00:00'
+wallt = '0:45:00'
 
 d = []
 
