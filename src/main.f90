@@ -11,9 +11,10 @@ character(len=2) :: c_ng,c_nt
 character(len=9) :: fmt1,fmt2
 character(len=12):: fmt3
 
-complex(8) :: coeff,fact,a1,a2,et,tracen,etotal,ecla,emap
-complex(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fcla,ftra,fqua
-complex(8),dimension(:,:),allocatable :: pol,hm
+complex(8) :: et
+real(8) :: coeff,fact,a1,a2,tracen,etotal,ecla,emap
+real(8),dimension(:),allocatable :: pol_tot,x,p,rm,pm,f,fcla,ftra,fqua
+real(8),dimension(:,:),allocatable :: pol,hm
 
 integer :: a,b,i,j,is,it,cnt,p_i,p_j,p_k,ib,nmap,ng,nb,nd,basispc
 integer :: np,nmcs,mcs,nmds,seed_dimension,nosc,step1,bath,init,nfile,i_c
@@ -197,7 +198,8 @@ MonteCarlo: do mcs = 1, nmcs
 
       if (mcs == nmcs) then
          call get_total_energy(nosc,nmap,kosc,p,x,hm,tracen,rm,pm,etotal,ecla,emap)
-         write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla),aimag(ecla), real(emap), aimag(emap)
+         !write(880,'(i6,6f15.5)')it, real(etotal), aimag(etotal), real(ecla),aimag(ecla), real(emap), aimag(emap)
+         write(880,'(i6,3f15.5)')it, etotal,ecla,emap
       end if
 
       if ((pol(ib,cnt) /= pol(ib,cnt)).or.(pol(ib,cnt)-1 == pol(ib,cnt))) then
@@ -210,7 +212,8 @@ dnmcs = dble(nmcs)
 open(333,file="polariz.out")
 do ib = 1, nmds + 1
    pol_tot(ib) = pol(ib,cnt)/dnmcs
-   write(333,*) time(3), ib-1, dble(pol_tot(ib)), aimag(pol_tot(ib))
+   !write(333,*) time(3), ib-1, dble(pol_tot(ib)), aimag(pol_tot(ib))
+   write(333,*) time(3), ib-1, pol_tot(ib)! aimag(pol_tot(ib))
 end do
 
 deallocate(c2)

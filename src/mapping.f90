@@ -17,10 +17,10 @@ contains
 subroutine get_total_energy(nosc,nmap,kosc,p,x,hm,trace,rm,pm,h,hcl,hma)
 implicit none
 
-complex(8),intent(out) :: h,hcl,hma
-complex(8),intent(in) :: trace
-complex(8),intent(in),dimension(:) :: x,p,rm,pm
-complex(8),intent(in),dimension(:,:) :: hm
+real(8),intent(out) :: h,hcl,hma
+real(8),intent(in) :: trace
+real(8),intent(in),dimension(:) :: x,p,rm,pm
+real(8),intent(in),dimension(:,:) :: hm
 
 integer :: i,j
 integer,intent(in) :: nmap,nosc
@@ -52,8 +52,8 @@ end subroutine get_total_energy
 subroutine get_coeff(ng,beta,omega,rm,pm,coeff)
 implicit none
 
-complex(8),intent(out) :: coeff
-complex(8),dimension(:),intent(in) :: rm,pm
+real(8),intent(out) :: coeff
+real(8),dimension(:),intent(in) :: rm,pm
 
 integer :: i
 integer,intent(in) :: ng
@@ -89,9 +89,9 @@ end subroutine get_coeff
 subroutine get_fact(ng,nb,coeff,llgb,llbg,mu,rm,pm,fact)
 implicit none
 
-complex(8),intent(in) :: coeff
-complex(8),intent(out) :: fact
-complex(8),dimension(:),intent(in) :: rm,pm
+real(8),intent(in) :: coeff
+real(8),intent(out) :: fact
+real(8),dimension(:),intent(in) :: rm,pm
 
 integer :: a,b
 integer,intent(in) :: ng,nb
@@ -319,8 +319,8 @@ end subroutine get_lambda_eigenvectors
 subroutine update_a2(c2,x,a2)
 implicit none
 
-complex(8),intent(out) :: a2
-complex(8),dimension(:),intent(in) :: x
+real(8),intent(out) :: a2
+real(8),dimension(:),intent(in) :: x
 
 integer :: i,n
 
@@ -337,10 +337,10 @@ end subroutine update_a2
 subroutine update_hmp(ng,nb,nmap,ed,a1,c2,x,hc,hm)
 implicit none
 
-complex(8) :: a2
-complex(8),intent(in) :: a1
-complex(8),dimension(:),intent(in) :: x
-complex(8),dimension(:,:),intent(inout) :: hm
+real(8) :: a2
+real(8),intent(in) :: a1
+real(8),dimension(:),intent(in) :: x
+real(8),dimension(:,:),intent(inout) :: hm
 
 integer :: a,b,i,n
 integer,intent(in) :: ng,nb,nmap
@@ -370,8 +370,8 @@ end subroutine update_hmp
 subroutine update_x(dt,p,x)
 implicit none
 
-complex(8),dimension(:),intent(in) :: p
-complex(8),dimension(:),intent(inout) :: x
+real(8),dimension(:),intent(in) :: p
+real(8),dimension(:),intent(inout) :: x
 
 integer :: i,n
 
@@ -388,9 +388,9 @@ end subroutine update_x
 subroutine update_pm(dt,hm,rm,pm)
 implicit none
 
-complex(8),dimension(:),intent(in) :: rm
-complex(8),dimension(:),intent(inout) :: pm
-complex(8),dimension(:,:),intent(in) :: hm
+real(8),dimension(:),intent(in) :: rm
+real(8),dimension(:),intent(inout) :: pm
+real(8),dimension(:,:),intent(in) :: hm
 
 integer :: i,j,n
 
@@ -409,9 +409,9 @@ end subroutine update_pm
 subroutine update_rm(dt,hm,pm,rm)
 implicit none
 
-complex(8),dimension(:),intent(in) :: pm
-complex(8),dimension(:),intent(inout) :: rm
-complex(8),dimension(:,:),intent(in) :: hm
+real(8),dimension(:),intent(in) :: pm
+real(8),dimension(:),intent(inout) :: rm
+real(8),dimension(:,:),intent(in) :: hm
 
 integer :: i,j,n
 
@@ -429,8 +429,8 @@ end subroutine update_rm
 subroutine update_p(dt,f,p)
 implicit none
 
-complex(8),dimension(:),intent(in) :: f
-complex(8),dimension(:),intent(inout) :: p
+real(8),dimension(:),intent(in) :: f
+real(8),dimension(:),intent(inout) :: p
 
 integer :: i,n
 
@@ -450,8 +450,9 @@ implicit none
 integer :: i
 integer,intent(in) :: nmap,ng,nb
 
-complex(8),intent(in) :: et,a1,a2
-complex(8),dimension(:,:),intent(out) :: hm
+complex(8),intent(in) :: et
+real(8),intent(in) :: a1,a2
+real(8),dimension(:,:),intent(out) :: hm
 
 real(8),intent(in) :: mu
 real(8),dimension(:,:),intent(in) :: hs
@@ -467,8 +468,8 @@ end subroutine get_hm2
 subroutine make_hm_traceless(nmap,trace,hm)
 implicit none
 
-complex(8),intent(out) :: trace
-complex(8),dimension(:,:),intent(inout) :: hm
+real(8),intent(out) :: trace
+real(8),dimension(:,:),intent(inout) :: hm
 
 integer :: i
 integer,intent(in) :: nmap
@@ -584,9 +585,9 @@ end subroutine get_force
 subroutine get_force_traceless(nmap,ng,nb,lld,kosc,x,c2,rm,pm,f,fcla,ftra,fqua)
 implicit none
 
-complex(8),dimension(:),allocatable :: c
-complex(8),dimension(:),intent(in) :: rm,pm,x
-complex(8),dimension(:),intent(out) :: f,fcla,ftra,fqua
+real(8),dimension(:),allocatable :: c
+real(8),dimension(:),intent(in) :: rm,pm,x
+real(8),dimension(:),intent(out) :: f,fcla,ftra,fqua
 
 integer :: a,b,i,j,n
 integer,intent(in) :: nmap,ng,nb
@@ -693,9 +694,8 @@ end function get_force_oneosc
 subroutine get_a(c2,ome,x,a1,a2)
 implicit none
 
-complex(8),dimension(:),intent(in) :: x
-
-complex(8), intent(out) :: a1,a2
+real(8),dimension(:),intent(in) :: x
+real(8), intent(out) :: a1,a2
 
 real(8),dimension(:),intent(in) :: c2,ome
 
@@ -717,7 +717,7 @@ implicit none
 
 real(8),parameter :: sqrt2 = 1.414213562d0
 
-complex(8),dimension(:),intent(out) :: rm, pm
+real(8),dimension(:),intent(out) :: rm, pm
 
 integer,intent(in) :: init
 
@@ -749,7 +749,7 @@ end subroutine sampling_mapng
 subroutine sampling_class(bath,beta,kosc,c2,x,p)
 implicit none
 
-complex(8),dimension(:),intent(out) :: x,p
+real(8),dimension(:),intent(out) :: x,p
 
 integer,intent(in) :: bath
 
