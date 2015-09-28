@@ -3,7 +3,7 @@ implicit none
 
 integer,parameter :: maxnmds = 20000
 
-real(8),parameter :: time1 = 0.30, pi= 3.1415926535d0, dts = 5d-5
+real(8),parameter :: time1 = 0.30, pi= 3.1415926535d0, dts = 1d-4
 real(8),parameter :: dt = 2d0*pi*dts
 
 character(len=1) :: dir
@@ -60,11 +60,12 @@ do j = 0, 7
       read(y,*) e1, nmds, tau(i), omega, time(i)
       
       read(x,*)
-      read(x,*)
+!      read(x,*)
       do it = 1, nmds
          read(x,*) delay(i), voidr,treal!, timag
-         read(x,*) timag
-         
+         !read(x,*) timag
+         timag = 0d0
+
          select case (j)
          case(0)   
             f_pol_000(it,i) = dcmplx(treal,timag)
