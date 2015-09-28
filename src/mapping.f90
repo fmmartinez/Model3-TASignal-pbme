@@ -470,7 +470,8 @@ implicit none
 complex(8),intent(out) :: trace
 complex(8),dimension(:,:),intent(inout) :: hm
 
-integer :: nmap,i
+integer :: i
+integer,intent(in) :: nmap
 
 trace = cmplx(0d0,0d0)
 do i = 1, nmap
